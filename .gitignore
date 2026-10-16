@@ -1,0 +1,23 @@
+/nbproject/private/
+/dist/
+*.iml
+/.idea
+/build/
+/out/
+target/
+/jave-core/nbproject/
+/jave-core-test/src/test/resources/private
+
+# ffmpeg and ffprobe binaries dropped next to the test media when running the
+# tests against a local build. They are hundreds of megabytes and come from the
+# jave-nativebin modules or from your own ffmpeg, never from this repository.
+/jave-core-test/src/test/resources/ffmpeg*
+/jave-core-test/src/test/resources/ffprobe*
+
+# Scratch media produced while reproducing a report, not a fixture any test uses
+/jave-core-test/src/test/resources/malformed.webm
+
+# Squelch Eclipse settings
+.settings
+.project
+.classpath

@@ -1,0 +1,122 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ws.schild</groupId>
+	<packaging>jar</packaging>
+	<version>4.2.0</version>
+	<artifactId>jave-core-test</artifactId>
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Test module, never published to Maven Central -->
+		<maven.deploy.skip>true</maven.deploy.skip>
+		<maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+		<maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+		<junit-jupiter-api.version>5.14.4</junit-jupiter-api.version>
+		<slf4j-simple.version>2.0.18</slf4j-simple.version>
+		<commons-lang3.version>3.20.0</commons-lang3.version>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<!--
+			  Without an explicit version maven falls back to surefire 2.12.4, which predates
+			  the junit platform. It then runs the tests with its pojo provider, which picks
+			  methods up by their test prefix and ignores every junit 5 annotation, so
+			  @Disabled had no effect and tests not named test... never ran at all.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-core</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-nativebin-win64</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-nativebin-linux64</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-nativebin-osx64</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<!-- The locator extracts ffmpeg-${os.arch}, which is ffmpeg-aarch64 on linux arm64,
+		     and only this package carries that binary. -->
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-nativebin-linux-arm64</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<!-- On windows arm64 the locator extracts ffmpeg-aarch64.exe, and only this
+		     package carries that binary. -->
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-nativebin-win-arm64</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit-jupiter-api.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- The engine that actually runs the junit 5 tests, without it surefire falls
+		     back to a provider that ignores the junit 5 annotations -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit-jupiter-api.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- A binding, so that the library's own logging is visible while tests run.
+		     It must be the same major version as slf4j-api or it will not be found. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j-simple.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- EncoderTest uses ArrayUtils. It used to arrive here by accident, as a
+		     transitive dependency of a selenium that nothing referenced, so removing
+		     selenium broke the build until this was declared properly. -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
